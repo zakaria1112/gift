@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>مفاجأة عيد ميلاد</title>
+<style>
+:root {
+  --bg1: #0f172a;
+  --bg2: #0f3b6b;
+  --accent: linear-gradient(90deg, #ff8a65 0%, #ffca28 50%, #7b1fa2 100%);
+  --glass: rgba(255, 255, 255, 0.04);
+  --text: #f5f7fb;
+  --btn-hover-shadow: 0 8px 25px rgba(255,255,255,0.2);
+}
+* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: all 0.3s ease; }
+html, body {
+  height: 100%; margin: 0;
+  background: linear-gradient(270deg,#0f172a,#0f3b6b,#1a1f40,#0f172a);
+  background-size: 600% 600%;
+  animation: colorShift 20s ease infinite;
+  color: var(--text);
+  display: flex; justify-content: center; align-items: center;
+  overflow: hidden;
+}
+.wrap { width: 95%; max-width: 900px; padding: 20px; }
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border-radius: 20px; padding: 30px;
+  box-shadow: 0 12px 30px rgba(2,6,23,0.6);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.05);
+  text-align: center;
+}
+h1 { margin: 0 0 15px; font-size: 2.2rem; }
+p.lead { margin: 10px 0 25px; font-size: 1rem; line-height: 1.6; opacity: 0.95; }
+.center { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  padding: 14px 20px; border-radius: 14px; border: none; cursor: pointer; font-weight: 700; font-size: 16px;
+  background: var(--accent); color: #071029; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.btn:hover { transform: translateY(-3px); filter: brightness(1.15); box-shadow: var(--btn-hover-shadow); }
+.btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--text); }
+.question-box { margin-top: 20px; padding: 20px; border-radius: 14px; background: var(--glass); }
+.choices { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 15px; justify-content: center; }
+.choice {
+  flex: 1 1 40%; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03); cursor: pointer; color: var(--text);
+  font-size: 16px; text-align: center;
+}
+.choice:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(2,6,23,0.4); }
+
+.black-screen {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background:#000; color:#fff; display:flex; justify-content:center; align-items:center;
+  font-size:24px; text-align:center; padding: 20px; z-index:999;
+  display:none; flex-direction:column;
+}
+.black-screen span { font-size:18px; margin-top:10px; opacity:0.7; }
+
+.final-intro { display:none; text-align:center; padding:20px; }
+.final {
+  display: none; padding: 36px; border-radius: 20px; text-align: center; position: relative; overflow: hidden;
+}
+.name { font-size: 2.5rem; font-weight: 900; margin: 6px 0;
+  background: linear-gradient(90deg,#ffd54f,#ff8a65,#7b1fa2);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: shine 3s infinite linear;
+}
+.sub { font-size: 1.1rem; margin: 6px 0; }
+@keyframes shine { from {background-position:0;} to {background-position:200%;} }
+@keyframes colorShift { 0% { background-position:0% 50%; } 50% { background-position:100% 50%; } 100% { background-position:0% 50%; } }
+
+/* المفرقعات */
+.firework { position: absolute; border-radius: 50%; pointer-events: none; animation: explode 1s ease-out forwards; }
+@keyframes explode { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+</style>
+</head>
+<body>
+<audio id="finalMusic" src="momi/cinnamon girl - lana del rey (slowed n reverb).mp3" preload="auto"></audio>
+
+<div class="wrap">
+  <div class="card" id="app">
+    <div id="screen-intro">
+      <h1 id="introTitle"></h1>
+      <p class="lead" id="introLead"></p>
+      <div class="center">
+        <button class="btn btn-primary" id="startBtn">نعم، ابدأ!</button>
+        <button class="btn btn-ghost" id="skipBtn">الى كنتي باغا دوزي نيشان للكادو</button>
+      </div>
+    </div>
+    <div id="screen-quiz" style="display:none">
+      <div class="question-box">
+        <div id="questionText" style="font-weight:700;font-size:20px">سؤال هنا</div>
+        <div class="choices">
+          <button class="choice" id="optA"></button>
+          <button class="choice" id="optB"></button>
+        </div>
+      </div>
+    </div>
+    <div id="finalIntro" class="final-intro">
+      <h1>هانتي الالة وصلتي لافان</h1>
+      <p class="lead">خا ماشي شي حاجة و لكن كادو على قد الحال</p>
+      <button class="btn btn-primary" id="showFinalBtn">وركي هنا هههه</button>
+    </div>
+    <div id="screen-final" class="final">
+      <div class="name" id="finalName"></div>
+      <div class="sub">مهم هو نشوف بخيير و تهلاي فراسك و نتلاقاو ف عيد ميلادك الجاي متعرفي نولي شي رجل مافيا</div>
+    </div>
+  </div>
+</div>
+
+<div id="blackScreen" class="black-screen"><div id="blackMsg"></div><span id="blackCounter"></span></div>
+
+<script>
+(function(){
+const config = { name:"أسماء", birthday:"9/9" };
+const questions = [
+  {q:'ملي كتهضري مع جوج ناس ولا كثر واش كتعامليهم بنفس الاسلوب', a:'كل واحد و قيمتو و اسلوب', b:'كنهضر بنفس طريقة', msg:'همممم تيقتك كملي'},
+  {q:'في الدراسة، ماذا يزعجك أكثر؟', a:'القلق والتوتر رغم المجهود', b:'الخوف من عدم الرضا عن نفسي', msg:' هههههه مسكييينة'},
+  {q:'كفاش كتعاملي ملي كتعرفي ان شي حد مقلق منك', a:'أحاول الاستماع لكن لا أعرف ما أقوله', b:'أشعر بالحزن داخلياً وأظهر وجهاً هادئاً', msg:'كملي كملي مشفت والو '},
+  {q:'أين تجدين راحة أكبر؟', a:'مع العائلة والأحباب', b:'في اللحظات الوحيدة المخصصة لنفسي', msg:'هدي شغانقول لك فيها سلاك اجمي'},
+  {q:'واش كتامني بلي اي حاجة مكتوبة صافي متقدرش تبدل', a:'ممكن الاقدار تبدل الى كان السبب', b:'متقدريش تغامري دكشي علاش لي جات مرحبا بها', msg:'  ميسااج راه اوبو غا ليمبغاش افهمم'},
+  {q:'عمرك فكرتي بلي تقدري تندمي على بزاف حوايج مستقبلا', a:'بعض القرارات لي مدرتش فحياتي', b:'اه الحوايج لي معرفتش قيمتهم', msg:'مييساج راه اوبو غا ليمبغاش افهم'}
+];
+
+const screenIntro = document.getElementById('screen-intro');
+const screenQuiz = document.getElementById('screen-quiz');
+const finalIntro = document.getElementById('finalIntro');
+const screenFinal = document.getElementById('screen-final');
+const startBtn = document.getElementById('startBtn');
+const skipBtn = document.getElementById('skipBtn');
+const optA = document.getElementById('optA');
+const optB = document.getElementById('optB');
+const showFinalBtn = document.getElementById('showFinalBtn');
+const blackScreen = document.getElementById('blackScreen');
+const blackMsg = document.getElementById('blackMsg');
+const blackCounter = document.getElementById('blackCounter');
+const questionText = document.getElementById('questionText');
+const finalName = document.getElementById('finalName');
+let currentQuestion = 0;
+
+function showBlackScreen(message, duration, callback){
+  blackMsg.textContent = message;
+  blackScreen.style.display='flex';
+  let remaining = duration;
+  blackCounter.textContent = remaining + ' ثواني';
+  const interval = setInterval(()=>{
+    remaining--;
+    blackCounter.textContent = remaining + ' ثواني';
+    if(remaining<=0){
+      clearInterval(interval);
+      blackScreen.style.display='none';
+      callback();
+    }
+  },1000);
+}
+
+function showQuestion(index){
+  const q = questions[index];
+  questionText.textContent = q.q;
+  optA.textContent = q.a;
+  optB.textContent = q.b;
+}
+
+startBtn.addEventListener('click', ()=>{
+  screenIntro.style.display='none';
+  screenQuiz.style.display='block';
+  currentQuestion = 0;
+  showQuestion(currentQuestion);
+});
+
+skipBtn.addEventListener('click', ()=>{
+  screenIntro.style.display='none';
+  showBlackScreen('دخلنا عليك بالله باغا تسكيبي الله يكبر بك انا مول سييت و حشمت نسكيبي و حشمت نقول الله يمسخك غي على وجه عيد ميلادك و وجهك احم احم.',8, ()=>{
+    screenIntro.style.display='block';
+  });
+});
+
+function nextQuestion(){
+  const msg = questions[currentQuestion].msg;
+  if(msg){ 
+    showBlackScreen(msg,5, ()=>{
+      currentQuestion++;
+      if(currentQuestion < questions.length){
+        if(currentQuestion === questions.length -1){
+          finalIntro.style.display='block';
+          screenQuiz.style.display='none';
+        } else {
+          showQuestion(currentQuestion);
+          screenQuiz.style.display='block';
+        }
+      }
+    });
+  } else {
+    currentQuestion++;
+    if(currentQuestion < questions.length){
+      showQuestion(currentQuestion);
+    } else {
+      finalIntro.style.display='block';
+      screenQuiz.style.display='none';
+    }
+  }
+}
+optA.addEventListener('click', nextQuestion);
+optB.addEventListener('click', nextQuestion);
+
+showFinalBtn.addEventListener('click', ()=>{
+  finalIntro.style.display='none';
+  finalName.textContent = `عيد ميلاد سعيد ياااااا هد البنت ${config.name}!`;
+  screenFinal.style.display='block';
+  
+  // تشغيل الموسيقى
+  const music = document.getElementById('finalMusic');
+  music.currentTime = 0; 
+  music.play();
+
+  launchFireworks();
+});
+
+document.getElementById('introTitle').textContent= `عارف بلي ماشي شي حاجة و لكن حاولت ${config.name} 🎉`;
+document.getElementById('introLead').textContent='مهم عيد ميلااد سعيد و ووووو صواب معنديش و المهم هو نشوف بخير';
+
+function launchFireworks(){
+  const colors = ['#ff595e','#ffca3a','#8ac926','#1982c4','#6a4c93','#ff6d00'];
+  for(let i=0;i<30;i++){
+    const firework = document.createElement('div');
+    firework.className='firework';
+    const size = Math.random()*10+5;
+    firework.style.width=size+'px';
+    firework.style.height=size+'px';
+    firework.style.background=colors[Math.floor(Math.random()*colors.length)];
+    firework.style.top=Math.random()*window.innerHeight+'px';
+    firework.style.left=Math.random()*window.innerWidth+'px';
+    screenFinal.appendChild(firework);
+    setTimeout(()=>{ firework.remove(); },1000);
+  }
+}
+})();
+</script>
+</body>
+</html>
